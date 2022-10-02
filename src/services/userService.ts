@@ -1,89 +1,30 @@
 const User = require('../models/userModel');
+import logging from '../library/logging';
 import { Request } from 'express';
 class UserService {
     async getUsers(query: Request['body']) {
-        try {
-            const Users = await User.find(query);
-            return {
-                success: true,
-                data: Users
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await User.find(query);
     }
     async getUserById(id: Number) {
-        try {
-            const user = await User.findById(id);
-            return {
-                success: true,
-                user
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await User.findById(id);
     }
     async createUser(user: Request['body']) {
         const newUser = new User(user);
-        try {
-            const result = await this.save(newUser);
-            return {
-                success: true,
-                body: result
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        const result = await this.save(newUser);
+        return result;
     }
     async updateUser(id: Number, body: Request['body']) {
-        try {
-            const user = await User.findByIdAndUpdate(id, body, {
-                new: true,
-                runValidators: true
-            });
-            return {
-                success: true,
-                user
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        const user = await User.findByIdAndUpdate(id, body, {
+            new: true,
+            runValidators: true
+        });
+        return user;
     }
     async deleteUser(id: Number) {
-        try {
-            const result = await User.findByIdAndDelete(id);
-            return {
-                success: true,
-                result
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await User.findByIdAndDelete(id);
     }
     async save(user: typeof User) {
-        try {
-            await User.save();
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return user.save();
     }
 }
 

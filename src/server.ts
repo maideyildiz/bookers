@@ -17,6 +17,14 @@ mongoose
         logging.error(error);
     });
 
-api.listen(config.server.port, () => {
+const server = api.listen(config.server.port, () => {
     logging.info(`App running on port ${config.server.port}...`);
+});
+
+process.on('unhandledRejection', (err: Error) => {
+    console.log(err.name, err.message);
+    console.log("Unhandled Rejection' Shutting down...");
+    server.close(() => {
+        process.exit(1);
+    });
 });
