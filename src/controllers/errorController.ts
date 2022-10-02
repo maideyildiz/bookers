@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import logging from '../library/logging';
 const AppError = require('../middleware/appError');
 const handleCastErrorDB = (err: AppError) => {
     const message = `Invalid ${err.path}:${err.value}.`;
@@ -29,7 +30,7 @@ const sendErrorProd = (err: AppError, res) => {
             message: err.message
         });
     } else {
-        console.error('ERROR', err);
+        logging.error(err);
 
         res.status(500).json({
             status: 'error',
@@ -41,19 +42,19 @@ const sendErrorProd = (err: AppError, res) => {
 module.exports = (err: AppError, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
-    if (process.env.NODE_ENV === 'development') {
-        sendErrorDev(err, res);
-    } else {
-        let error = { ...err };
-        if (err.name === 'CastError') {
-            error = handleCastErrorDB(error);
-        }
-        if (err.code === 11000) {
-            error = handleDuplicateFieldsDB(err);
-        }
-        if (err.name === 'ValidationError') {
-            error = handleValidationErrorDB(error);
-        }
-        sendErrorProd(error, res);
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, res);
+    // } else {
+    // let error = { ...err };
+    // if (err.name === 'CastError') {
+    //     error = handleCastErrorDB(error);
+    // }
+    // if (err.code === 11000) {
+    //     error = handleDuplicateFieldsDB(err);
+    // }
+    // if (err.name === 'ValidationError') {
+    //     error = handleValidationErrorDB(error);
+    // }
+    // sendErrorProd(error, res);
+    //}
 };

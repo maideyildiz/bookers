@@ -1,4 +1,12 @@
 import dotenv from 'dotenv';
+import logging from '../library/logging';
+
+process.on('uncaughtException', (err) => {
+    logging.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+    logging.error(err.message);
+    process.exit(1);
+});
+
 dotenv.config();
 const MONGO_USERNAME = process.env.MONGO_USERNAME || '';
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD || '';

@@ -13,7 +13,7 @@ app.use('/api/v1/books', bookRouter);
 app.use('/api/v1/users', userRouter);
 //app.use("/api/v1/group", groupRouter);
 app.all('*', (req, res, next) => {
-    next(new AppError(`Cant find ${req.url} on this server!`, 400));
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 app.use(globalErrorHandler);

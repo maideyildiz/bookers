@@ -22,8 +22,8 @@ const server = api.listen(config.server.port, () => {
 });
 
 process.on('unhandledRejection', (err: Error) => {
-    console.log(err.name, err.message);
-    console.log("Unhandled Rejection' Shutting down...");
+    logging.error(err.message);
+    logging.error("Unhandled Rejection' 💥💥💥Shutting down...");
     server.close(() => {
         process.exit(1);
     });

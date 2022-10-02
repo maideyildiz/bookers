@@ -8,10 +8,18 @@ class UserService {
     async getUserById(id: Number) {
         return await User.findById(id);
     }
+    async getUserAuth(query: Request['body']) {
+        const user = await User.findOne(query).select('+password');
+        return user;
+    }
+    async isCorrectPassword(user: typeof User, password_two: String) {
+        const ifCorrect = await user.correctPassword(password_two, user.password);
+        return ifCorrect;
+    }
     async createUser(user: Request['body']) {
         const newUser = new User(user);
-        const result = await this.save(newUser);
-        return result;
+        await this.save(newUser);
+        return newUser;
     }
     async updateUser(id: Number, body: Request['body']) {
         const user = await User.findByIdAndUpdate(id, body, {
