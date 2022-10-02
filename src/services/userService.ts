@@ -1,12 +1,12 @@
-const Book = require('../models/bookModel');
+const User = require('../models/userModel');
 import { Request } from 'express';
-class bookService {
-    async getbooks(query: Request['body']) {
+class UserService {
+    async getUsers(query: Request['body']) {
         try {
-            const books = await Book.find();
+            const Users = await User.find(query);
             return {
                 success: true,
-                books
+                data: Users
             };
         } catch (err) {
             return {
@@ -15,12 +15,12 @@ class bookService {
             };
         }
     }
-    async getbookById(id: Number) {
+    async getUserById(id: Number) {
         try {
-            const book = await Book.findById(id);
+            const user = await User.findById(id);
             return {
                 success: true,
-                book
+                user
             };
         } catch (err) {
             return {
@@ -29,10 +29,10 @@ class bookService {
             };
         }
     }
-    async createbook(postToCreate: Request['body']) {
-        const newbook = new Book(postToCreate);
+    async createUser(user: Request['body']) {
+        const newUser = new User(user);
         try {
-            const result = await this.save(newbook);
+            const result = await this.save(newUser);
             return {
                 success: true,
                 body: result
@@ -44,15 +44,15 @@ class bookService {
             };
         }
     }
-    async updatebook(id: Number, body: Request['body']) {
+    async updateUser(id: Number, body: Request['body']) {
         try {
-            const book = await Book.findByIdAndUpdate(id, body, {
+            const user = await User.findByIdAndUpdate(id, body, {
                 new: true,
                 runValidators: true
             });
             return {
                 success: true,
-                book
+                user
             };
         } catch (err) {
             return {
@@ -61,9 +61,9 @@ class bookService {
             };
         }
     }
-    async deletebook(id: Number) {
+    async deleteUser(id: Number) {
         try {
-            const result = await Book.findByIdAndDelete(id);
+            const result = await User.findByIdAndDelete(id);
             return {
                 success: true,
                 result
@@ -75,9 +75,9 @@ class bookService {
             };
         }
     }
-    async save(book: typeof Book) {
+    async save(user: typeof User) {
         try {
-            await book.save();
+            await User.save();
         } catch (err) {
             return {
                 success: false,
@@ -87,4 +87,4 @@ class bookService {
     }
 }
 
-module.exports = bookService;
+module.exports = UserService;
