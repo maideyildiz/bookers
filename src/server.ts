@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 import { config } from './config/config';
 const api = require('./app');
+import logging from './library/logging';
 //const book = require("./models/bookModel");
 
 mongoose.set('debug', true);
@@ -10,12 +11,12 @@ mongoose
         w: 'majority'
     })
     .then(() => {
-        console.log('Successful Connection');
+        logging.info('Successful Connection');
     })
     .catch((error) => {
-        console.log(error);
+        logging.error(error);
     });
 
 api.listen(config.server.port, () => {
-    console.log(`App running on port ${config.server.port}...`);
+    logging.info(`App running on port ${config.server.port}...`);
 });
