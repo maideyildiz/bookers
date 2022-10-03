@@ -46,7 +46,12 @@ const userSchema = new mongoose.Schema(
             type: Date,
             default: Date.now()
         },
-        passwordChangedAt: Date
+        passwordChangedAt: Date,
+        role: {
+            type: String,
+            enum: ['user', 'group-admin', 'admin'],
+            default: 'user'
+        }
         // group: [
         //   {
         //     type: Schema.Types.ObjectId,
