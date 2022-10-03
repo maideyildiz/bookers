@@ -12,7 +12,11 @@ class UserService {
         const user = await User.findOne(query).select('+password');
         return user;
     }
-    async isCorrectPassword(user: typeof User, password_two: String) {
+    isCorrectPassword(user: typeof User, timestamp) {
+        const ifCorrect = user.changedPasswordAfter(timestamp);
+        return ifCorrect;
+    }
+    async didUserChangedPassword(user: typeof User, password_two: String) {
         const ifCorrect = await user.correctPassword(password_two, user.password);
         return ifCorrect;
     }
