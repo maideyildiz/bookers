@@ -8,8 +8,15 @@ router.post('/login', authController.login);
 router.patch('/edit', userController.updateUser);
 router.delete('/edit', userController.deleteUser);
 
-//router.route('/').get(userController.getAllUsers).post(userController.createUser); //only for admin users
+router
+    .route('/')
+    .get(authController.protect, authController.restrictTo('admin'), userController.getAllUsers)
+    .post(authController.protect, authController.restrictTo('admin'), userController.createUser); //only for admin users
 
-//router.route('/:id').get(userController.getUser).patch(userController.updateUser).delete(userController.deleteUser); //only for admin users
+router
+    .route('/:id')
+    .get(authController.protect, authController.restrictTo('admin'), userController.getUser)
+    .patch(authController.protect, authController.restrictTo('admin'), userController.updateUser)
+    .delete(authController.protect, authController.restrictTo('admin'), userController.deleteUser); //only for admin users
 
 module.exports = router;
