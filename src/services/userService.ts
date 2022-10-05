@@ -8,9 +8,19 @@ class UserService {
     async getUserById(id: Number) {
         return await User.findById(id);
     }
-    async getUserAuth(query: Request['body']) {
-        const user = await User.findOne(query).select('+password');
+    async getUser(query: Request['body']) {
+        const user = await User.findOne(query);
         return user;
+    }
+    async getUserResetPasswordToken(query: Request['body']) {
+        const user = await this.getUser(query);
+        const resetToken = user.createPasswordResetToken();
+        await this.saveBeforeSave(user);
+        return resetToken;
+    }
+    async getUserAuth(query: Request['body']) {
+        const user = await this.getUser(query);
+        return user.select('+password');
     }
     isCorrectPassword(user: typeof User, timestamp) {
         const ifCorrect = user.changedPasswordAfter(timestamp);
@@ -37,6 +47,9 @@ class UserService {
     }
     async save(user: typeof User) {
         return user.save();
+    }
+    async saveBeforeSave(user: typeof User) {
+        return user.save({ validateBeforeSave: false });
     }
 }
 

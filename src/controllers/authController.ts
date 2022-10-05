@@ -77,3 +77,11 @@ exports.restrictTo = (...roles) => {
         next();
     };
 };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const user = await UserServiceInstance.getUser({ email: req.body.email });
+    if (!user) {
+        return next(new AppError('The user does not exist. ', 404));
+    }
+});
+exports.resetPassword = async (req, res, next) => {};

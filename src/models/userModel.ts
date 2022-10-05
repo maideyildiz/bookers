@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 const mongoose = require('mongoose');
 const validator = require('validator');
 import bcrypt from 'bcryptjs';
@@ -46,12 +47,15 @@ const userSchema = new mongoose.Schema(
             type: Date,
             default: Date.now()
         },
-        passwordChangedAt: Date,
         role: {
             type: String,
             enum: ['user', 'group-admin', 'admin'],
             default: 'user'
-        }
+        },
+        passwordChangedAt: Date,
+        passwordResetToken: String,
+        passwordResetExpires: Date
+
         // group: [
         //   {
         //     type: Schema.Types.ObjectId,
@@ -87,6 +91,14 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp: Number) {
         return JWTTimestamp < changedTimestamps;
     }
     return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
 };
 
 const User = mongoose.model('Users', userSchema);
