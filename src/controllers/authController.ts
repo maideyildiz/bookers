@@ -6,6 +6,7 @@ import logging from '../library/logging';
 const AppError = require('../middleware/appError');
 const catchAsync = require('./../middleware/catchAsync');
 const UserServiceInstance = new UserService();
+import crypto from 'crypto';
 
 const signToken = (id) => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -84,7 +85,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     if (!user) {
         return next(new AppError('The user does not exist. ', 404));
     }
-    const resetToken = await UserServiceInstance.getUserResetPasswordToken({ email: req.body.email });
+    const resetToken = await UserServiceInstance.saveUserResetPasswordToken({ email: req.body.email });
     const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to:${resetUrl}.\nIf you didn't forget your password, please ignore this email!`;
@@ -101,7 +102,22 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         });
     } catch (err) {
         //kaydedileni geri al
-        const resetToken = await UserServiceInstance.getUserResetPasswordToken({ email: req.body.email });
+        await UserServiceInstance.saveUserResetPasswordToken({ email: undefined });
+        return next(new AppError('Had an error. Try again'), 500);
     }
 });
-exports.resetPassword = async (req, res, next) => {};
+exports.resetPassword = async (req, res, next) => {
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const user = await UserServiceInstance.getUser({ passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } });
+
+    if (!user) {
+        return next(new AppError('Token is invalid or has expired', 400));
+    }
+    await UserServiceInstance.changePassword(user, req.body.password, req.body.passwordConfirm);
+
+    const token = signToken(user._id);
+    res.status(201).json({
+        status: 'success',
+        token
+    });
+};

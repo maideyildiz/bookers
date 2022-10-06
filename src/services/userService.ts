@@ -12,11 +12,18 @@ class UserService {
         const user = await User.findOne(query);
         return user;
     }
-    async getUserResetPasswordToken(query: Request['body']) {
+    async saveUserResetPasswordToken(query: Request['body']) {
         const user = await this.getUser(query);
         const resetToken = user.createPasswordResetToken();
         await this.saveBeforeSave(user);
         return resetToken;
+    }
+    async changePassword(user: typeof User, password: String, passwordConfirm = String) {
+        user.password = password;
+        user.passwordConfirm = passwordConfirm;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await this.save(user);
     }
     async getUserAuth(query: Request['body']) {
         const user = await this.getUser(query);
