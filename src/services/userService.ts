@@ -55,6 +55,10 @@ class UserService {
         });
         return user;
     }
+    async updateUserWithoutOptions(id: Number, body: Request['body']) {
+        const user = await User.findByIdAndUpdate(id, body);
+        return user;
+    }
     async deleteUser(id: Number) {
         return await User.findByIdAndDelete(id);
     }

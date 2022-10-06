@@ -51,3 +51,11 @@ exports.updateAuthUser = catchAsync(async (req: Request, res: Response, next: Ne
         }
     });
 });
+
+exports.deleteAuthUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    await UserServiceInstance.updateUserWithoutOps(req.body.id, { isActive: false });
+    res.status(204).json({
+        status: 'success',
+        data: null
+    });
+});

@@ -9,7 +9,7 @@ router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 router.patch('/updatePassword', authController.protect, authController.updatePassword);
 router.patch('/updateData', authController.protect, userController.updateAuthUser);
-router.delete('/delete', userController.deleteUser);
+router.delete('/deleteAccount', authController.protect, userController.deleteAuthUser);
 
 router
     .route('/')

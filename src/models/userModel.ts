@@ -37,7 +37,8 @@ const userSchema = new mongoose.Schema(
         },
         is_active: {
             type: Boolean,
-            default: true
+            default: true,
+            select: false
         },
         created_ad: {
             type: Date,
@@ -78,6 +79,11 @@ userSchema.pre('save', async function (next) {
 
     // Delete passwordConfirm field
     this.passwordConfirm = undefined;
+    next();
+});
+
+userSchema.pre(/^find/, function (next) {
+    this.field({ isActive: { $ne: false } });
     next();
 });
 
