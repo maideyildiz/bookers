@@ -18,14 +18,20 @@ class UserService {
         await this.saveBeforeSave(user);
         return resetToken;
     }
-    async changePassword(user: typeof User, password: String, passwordConfirm = String) {
+    async changePassword(user: typeof User, password: String, passwordConfirm = String, isReset: Boolean) {
         user.password = password;
         user.passwordConfirm = passwordConfirm;
-        user.passwordResetToken = undefined;
-        user.passwordResetExpires = undefined;
+        if (isReset) {
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+        }
         await this.save(user);
     }
     async getUserAuth(query: Request['body']) {
+        const user = await this.getUser(query);
+        return user.select('+password');
+    }
+    async getUserAuthById(query: Request['body']) {
         const user = await this.getUser(query);
         return user.select('+password');
     }
