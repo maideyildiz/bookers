@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSantize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import hpp from 'hpp';
 const bookRouter = require('./routes/bookRoutes');
 const userRouter = require('./routes/userRoutes');
 const AppError = require('./middleware/appError');
@@ -17,6 +18,9 @@ app.use(express.json({ limit: '10kb' }));
 app.use(mongoSantize());
 //Data sanitization XSS
 app.use(xss());
+//Prevent parameter polition (on url)
+//Can add some strings to allow dublicate with whitelist param
+app.use(hpp());
 
 app.use('/api/v1/books', bookRouter);
 app.use('/api/v1/users', userRouter);
