@@ -2,88 +2,28 @@ const Book = require('../models/bookModel');
 import { Request } from 'express';
 class bookService {
     async getbooks(query: Request['body']) {
-        try {
-            const books = await Book.find();
-            return {
-                success: true,
-                books
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await Book.find(query);
     }
     async getbookById(id: Number) {
-        try {
-            const book = await Book.findById(id);
-            return {
-                success: true,
-                book
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await Book.findById(id);
     }
     async createbook(postToCreate: Request['body']) {
         const newbook = new Book(postToCreate);
-        try {
-            const result = await this.save(newbook);
-            return {
-                success: true,
-                body: result
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        await this.save(newbook);
+        return newbook;
     }
     async updatebook(id: Number, body: Request['body']) {
-        try {
-            const book = await Book.findByIdAndUpdate(id, body, {
-                new: true,
-                runValidators: true
-            });
-            return {
-                success: true,
-                book
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        const book = await Book.findByIdAndUpdate(id, body, {
+            new: true,
+            runValidators: true
+        });
+        return book;
     }
     async deletebook(id: Number) {
-        try {
-            const result = await Book.findByIdAndDelete(id);
-            return {
-                success: true,
-                result
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await Book.findByIdAndDelete(id);
     }
     async save(book: typeof Book) {
-        try {
-            await book.save();
-        } catch (err) {
-            return {
-                success: false,
-                error: err
-            };
-        }
+        return await book.save();
     }
 }
 
