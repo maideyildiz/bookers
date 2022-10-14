@@ -2,6 +2,7 @@ import crypto from 'crypto';
 const mongoose = require('mongoose');
 const validator = require('validator');
 import bcrypt from 'bcryptjs';
+const Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema(
     {
@@ -55,14 +56,11 @@ const userSchema = new mongoose.Schema(
         },
         passwordChangedAt: Date,
         passwordResetToken: String,
-        passwordResetExpires: Date
-
-        // group: [
-        //   {
-        //     type: Schema.Types.ObjectId,
-        //     ref: "Group",
-        //   },
-        // ],
+        passwordResetExpires: Date,
+        group: {
+            type: Schema.Types.ObjectId,
+            ref: 'Group'
+        }
     },
     {
         autoCreate: true, // auto create collection
