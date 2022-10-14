@@ -6,9 +6,9 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 const bookRouter = require('./routes/bookRoutes');
 const userRouter = require('./routes/userRoutes');
+const groupRouter = require('./routes/groupRoutes');
 const AppError = require('./middleware/appError');
 const globalErrorHandler = require('./controllers/errorController');
-//const groupRouter = require("./routes/groupRoutes");
 
 const app = express();
 app.use(helmet());
@@ -24,7 +24,7 @@ app.use(hpp());
 
 app.use('/api/v1/books', bookRouter);
 app.use('/api/v1/users', userRouter);
-//app.use("/api/v1/group", groupRouter);
+app.use('/api/v1/group', groupRouter);
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });

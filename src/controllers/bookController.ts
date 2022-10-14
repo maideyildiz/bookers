@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-const bookService = require('../services/bookServise');
+const bookService = require('../services/bookService');
 const catchAsync = require('./../middleware/catchAsync');
 const bookServiceInstance = new bookService();
 
